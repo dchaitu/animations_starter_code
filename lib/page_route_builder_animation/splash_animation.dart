@@ -22,22 +22,8 @@ class _SplashAnimationState extends State<SplashAnimation> with SingleTickerProv
   animationController.addListener(() {
     if(animationController.isCompleted) {
         Navigator.of(context).push(
-          PageRouteBuilder(
-              transitionDuration: const Duration(milliseconds: 10000),
-            reverseTransitionDuration: const Duration(milliseconds: 10000),
-            pageBuilder: (context, animation, secondaryAnimation) {
-              return const Destination();
-            },
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              final positionTween =
-                  Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero)
-                      .animate(animation);
-              return SlideTransition(
-                position: positionTween,
-                child: child,
-              );
-            },
+          CustomTransition(
+            route: const Destination(),
           ),
         );
         Timer(const Duration(milliseconds: 1000), () {
@@ -91,4 +77,24 @@ class Destination extends StatelessWidget {
       ),
     );
   }
+}
+
+class CustomTransition extends PageRouteBuilder {
+  final Widget route;
+
+  CustomTransition({required this.route})
+      : super(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return route;
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final positionTween =
+                Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero)
+                    .animate(animation);
+            return SlideTransition(
+              position: positionTween,
+              child: child,
+            );
+          },
+        );
 }
